@@ -16,21 +16,89 @@
     <h1>Pagina</h1>
 
     <div id="content" class='main'>
-    <form id="file">
-      <div id="mybutton">
-				<input type="text" class="form-control" id="desc" placeholder="Description">
-				<br>
-        <input type="file" id="myfile">
-        <br>
-        <button id="submitBtn" type="submit">Submit</button>
-        <br>
-        <br>
-        <progress id="progress" value="0"></progress>
-      </form> 
-    </div>
-
-
-    </div>
+	    <form id="movieForm">
+	      <div id="mybutton">
+					<input type="text" class="form-control" id="name" placeholder="Movie Name">
+					<br>
+					<button id="submit" type="submit">Search</button>
+			</form>
+		</div>
+  </div>
 </body>
 
+<script>
+        var get = function (movieName) {
+
+        	var data = "{}";
+        	var api_key= "492c7fa7d569781eb1e66f5aaa4a834f";
+
+					var xhr = new XMLHttpRequest();
+
+					xhr.addEventListener("readystatechange", function () {
+					  if (this.readyState === this.DONE) {
+					    console.log(this.responseText);
+					    myFunction(JSON.parse(this.responseText));
+					  }
+					});
+
+					xhr.open("GET", "https://api.themoviedb.org/3/search/company?page=1&query=The%20Matrix&api_key=492c7fa7d569781eb1e66f5aaa4a834f");
+					//xhr.open("GET", "https://api.themoviedb.org/3/search/company?page=1&query=" + "Doctor Strange" + "&api_key=" + api_key);
+
+					xhr.send(data);
+
+
+					//alert("y klk");
+
+
+
+
+
+
+
+
+            // var xmlhttp = new XMLHttpRequest();
+            // var api_key = 
+            // var url = "http://pokeapi.co/api/v2/pokemon/" + pokemon + "/";
+            // xmlhttp.onreadystatechange = function () {
+            //     if (this.readyState == 4 && this.status == 200) {
+            //         myFunction(JSON.parse(this.responseText));
+            //         alert(this.responseText);
+            //     }
+            // };
+            // xmlhttp.open("GET", url, true);
+            // xmlhttp.send();
+            function myFunction(response) {
+            	console.log("procesando response");
+                // // Get the container
+                // var container = document.getElementById('content');
+                // // Create list element
+                // var list = document.createElement('ul');
+                // list.id = 'pokemon';
+                // list.classList.add('list-group');
+                // // Iterate over results
+                // for(var idx=0; idx<response.abilities.length; idx++){
+                //       var ability = document.createElement('li');
+                //       ability.innerHTML = '- ' + response.abilities[idx].ability.name;
+                //       list.appendChild(ability);
+                //     }
+                // // Add list to container
+                // container.appendChild(list);
+            }
+        }
+        var form = document.getElementById('movieForm');
+        form.onsubmit = function(evt) {
+            evt.preventDefault();
+            var name = document.getElementById('name');
+            // Get data
+            
+            get(name.value)
+            //document.createElement('h1');
+            // Reset form
+            name.value = '';
+        };
+        // Get everything
+        get();
+    </script>
 </html>
+
+
