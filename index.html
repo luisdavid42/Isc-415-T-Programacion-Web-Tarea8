@@ -27,48 +27,26 @@
 </body>
 
 <script>
-        var get = function (movieName) {
-
-        	var data = "{}";
+        var get = function (movieName,pageNum) {
         	var api_key= "492c7fa7d569781eb1e66f5aaa4a834f";
+            var url = "https://api.themoviedb.org/3/search/movie" + "?api_key=" + api_key + "&query=" + movieName + "&page=" + pageNum;
 
-					var xhr = new XMLHttpRequest();
+            var xhr = new XMLHttpRequest();
 
-					xhr.addEventListener("readystatechange", function () {
-					  if (this.readyState === this.DONE) {
-					    console.log(this.responseText);
-					    myFunction(JSON.parse(this.responseText));
-					  }
-					});
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                //console.log(this.responseText);
+                foundResults(JSON.parse(this.responseText));
+                }
+            };
 
-					xhr.open("GET", "https://api.themoviedb.org/3/search/company?page=1&query=The%20Matrix&api_key=492c7fa7d569781eb1e66f5aaa4a834f");
-					//xhr.open("GET", "https://api.themoviedb.org/3/search/company?page=1&query=" + "Doctor Strange" + "&api_key=" + api_key);
+            xhr.open("GET", url, true);
+            xhr.send();
 
-					xhr.send(data);
-
-
-					//alert("y klk");
-
-
-
-
-
-
-
-
-            // var xmlhttp = new XMLHttpRequest();
-            // var api_key = 
-            // var url = "http://pokeapi.co/api/v2/pokemon/" + pokemon + "/";
-            // xmlhttp.onreadystatechange = function () {
-            //     if (this.readyState == 4 && this.status == 200) {
-            //         myFunction(JSON.parse(this.responseText));
-            //         alert(this.responseText);
-            //     }
-            // };
-            // xmlhttp.open("GET", url, true);
-            // xmlhttp.send();
-            function myFunction(response) {
+            function foundResults(response) {
             	console.log("procesando response");
+
+                
                 // // Get the container
                 // var container = document.getElementById('content');
                 // // Create list element
@@ -91,13 +69,10 @@
             var name = document.getElementById('name');
             // Get data
             
-            get(name.value)
-            //document.createElement('h1');
+            get(name.value,1);
             // Reset form
             name.value = '';
         };
-        // Get everything
-        get();
     </script>
 </html>
 
