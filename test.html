@@ -1,0 +1,121 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"/>
+  </head>
+  <body>
+    <h1>Search movie</h1>
+    <form id="getmovie">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" placeholder="Movie name">
+      </div>
+      <button id="submit" type="submit">Submit</button>
+    </form>
+    <h3>Results</h3>
+    <button id="previous" type="button">Previous</button>
+    <button id="next" type="button">Next</button>
+    <div id="content">
+    </div>
+  </body>
+  <script>
+  var apikey= "45091647d3386a253c10c484e5ff7b8f";
+  var baseUrl = "https://api.themoviedb.org/3/search/movie";
+  changePrevious();
+  changeNext();
+
+  function changePrevious(){
+    var pButton = document.getElementById('previous');
+    if(pButton.disabled == false){
+    pButton.disabled = true;
+    }
+    else
+      pButton.disabled = false;
+  }
+
+  function changeNext(){
+    var nButton = document.getElementById('next');
+    if(nButton.disabled == false){
+    nButton.disabled = true;
+    }
+    else
+      nButton.disabled = false;
+  }
+
+  var get = function(name, pagenum){
+
+    var xmlhttp = new XMLHttpRequest();
+    var reqUrl = baseUrl + "?api_key=" + apikey + "&query=" + name + "&page=" + pagenum;
+      xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    successFunction(JSON.parse(this.responseText));
+                }
+                else if (this.readyState == 4 && this.status == 404){
+                    errorFunction();
+
+                }
+            };
+
+    xmlhttp.open("GET", reqUrl, true);
+    xmlhttp.send();
+
+    function successFunction(res){
+                var container = document.getElementById('content');
+                
+                var list = document.createElement('ul');
+                list.id = 'movies';
+                list.classList.add('list-group');
+                    for(var idx = 0; idx<res.results.length; idx++){
+                      var movieTitle = document.createElement('li');
+                      movieTitle.innerHTML = "Title: " + res.results[idx].original_title;
+                      var movieRelease = document.createElement('li');
+                      movieRelease.classList.add('list-group-item');
+                      movieRelease.innerHTML = "Release date: " + res.results[idx].release_date;
+                      var moviePoster = document.createElement('img');
+                      if(res.results[idx].poster_path==null){
+                        moviePoster.src="http://itorrent.us/images/movie-poster.jpg"
+                        moviePoster.width = "185";
+                      }
+                      else{
+                        moviePoster.src = "http://image.tmdb.org/t/p/w185//" + res.results[idx].poster_path;
+
+                      }
+                      
+                      moviePoster.classList.add('list-group-item');
+                      var movieVote = document.createElement('li');
+                      movieVote.classList.add('list-group-item');
+                      movieVote.innerHTML = "Vote avg: " + res.results[idx].vote_average;
+                      list.appendChild(movieTitle);
+                      list.appendChild(movieRelease);
+                      list.appendChild(movieVote);
+                      list.appendChild(moviePoster);
+                    }
+
+                container.appendChild(list);
+
+    }
+
+    function errorFunction(){
+              var container = document.getElementById('content');
+              var error = document.createElement('h2');
+
+              var terror = document.createTextNode('Name not found');
+              error.appendChild(terror);
+              container.appendChild(error);
+    }
+
+  };
+
+
+  var form = document.getElementById('getmovie');
+  form.onsubmit = function(evt) {
+            evt.preventDefault();
+            var name = document.getElementById('name');
+            var container = document.getElementById('content');
+            container.innerHTML = "";
+            get(name.value, 1);
+            name.value = '';
+        };
+
+  </script>
+</html>
+
