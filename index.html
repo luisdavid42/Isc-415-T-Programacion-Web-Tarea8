@@ -67,29 +67,6 @@
                       var title = document.createElement('li');
                       title.innerHTML = 'Title: ' + response.results[idx].original_title;
                       list.appendChild(title);
-
-                      //Agregando la fecha de lanzamiento
-                      var releaseDate = document.createElement('li');
-                      releaseDate.innerHTML = 'Release Date: ' + response.results[idx].release_date;
-                      list.appendChild(releaseDate);
-
-                      //Agregando el Poster
-                      var poster = document.createElement('img');
-                      if(response.results[idx].poster_path==null){
-                        poster.src="http://itorrent.us/images/movie-poster.jpg"
-                        poster.width = "185";
-                      }
-                      else{
-                        poster.src = "http://image.tmdb.org/t/p/w185//" + response.results[idx].poster_path;
-
-                      }
-                      list.appendChild(poster);
-
-                      //Agregando Los Votos
-                      var voteAvg = document.createElement('li');
-                      voteAvg.innerHTML = 'Title: ' + response.results[idx].vote_average;
-                      list.appendChild(voteAvg);
-
                     }
                 // Add list to container
                 container.appendChild(list);
