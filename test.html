@@ -1,0 +1,99 @@
+<html>
+
+<head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+
+    <style>
+        .main {
+            padding-left: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Movie Search</h1>
+
+    <div id="content" class='main'>
+	    <form id="movieForm">
+	      <div id="mybutton">
+					<input type="text" class="form-control" id="name" placeholder="Movie Name">
+					<br>
+					<button id="submit" type="submit">Search</button>
+			</form>
+      <div id="Result buttons" class='main'>
+        <br>
+        Results
+        <div>
+        <br>
+        <button id="backBtn" type="button">Back</button>
+        <textarea name="myTextBox" cols="8" rows="1">Page #1</textarea>
+        <button id="nextBtn" type="button">Next</button>
+      </div>
+		</div>
+  </div>
+</body>
+
+<script>
+        var get = function (movieName,pageNum) {
+        	var api_key= "492c7fa7d569781eb1e66f5aaa4a834f";
+            var url = "https://api.themoviedb.org/3/search/movie" + "?api_key=" + api_key + "&query=" + movieName + "&page=" + pageNum;
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                //console.log(this.responseText);
+                foundResults(JSON.parse(this.responseText));
+                }
+            };
+            xhr.open("GET", url, true);
+            xhr.send();
+            function foundResults(response) {
+            	console.log("procesando response");
+                // Get the container
+                var container = document.getElementById('content');
+                // Create list element
+                var list = document.createElement('ul');
+                list.id = 'movies';
+                list.classList.add('list-group');
+                // Iterate over results
+                for(var idx=0; idx<response.results.length; idx++){
+                      //Agregando el Titulo
+                      var title = document.createElement('li');
+                      title.innerHTML = 'Title: ' + response.results[idx].original_title;
+                      list.appendChild(title);
+                      //Agregando la fecha de lanzamiento
+                      var releaseDate = document.createElement('li');
+                      releaseDate.innerHTML = 'Release Date: ' + response.results[idx].release_date;
+                      list.appendChild(releaseDate);
+                      //Agregando el Poster
+                      var poster = document.createElement('img');
+                      if(response.results[idx].poster_path==null){
+                        poster.src="http://itorrent.us/images/movie-poster.jpg"
+                        poster.width = "185";
+                      }
+                      else{
+                        poster.src = "http://image.tmdb.org/t/p/w185//" + response.results[idx].poster_path;
+                      }
+                      list.appendChild(poster);
+                      //Agregando Los Votos
+                      var voteAvg = document.createElement('li');
+                      voteAvg.innerHTML = 'Title: ' + response.results[idx].vote_average;
+                      list.appendChild(voteAvg);
+                    }
+                // Add list to container
+                container.appendChild(list);
+            }
+        }
+        var form = document.getElementById('movieForm');
+        form.onsubmit = function(evt) {
+            evt.preventDefault();
+            var name = document.getElementById('name');
+            // Get data
+            
+            get(name.value,1);
+            // Reset form
+            name.value = '';
+        };
+    </script>
+</html>
