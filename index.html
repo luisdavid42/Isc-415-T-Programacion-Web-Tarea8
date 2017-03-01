@@ -32,7 +32,7 @@
         <div id="Result buttons" class='main'>
           <br>
           <button id="backBtn" type="button" onclick="goBack()">Back</button>
-          <textarea name="myTextBox" cols="8" rows="1" >Page #1</textarea>
+          <textarea id="pageTb" cols="8" rows="1" ></textarea>
           <button id="nextBtn" type="button" onclick="goNext()">Next</button>
         </div>
         <div id="content">
@@ -43,6 +43,7 @@
 
   <script>
 
+    var currentName="";
     var currentPage=0;
     var results=0;
     var pages=0;
@@ -52,7 +53,7 @@
       var url = "https://api.themoviedb.org/3/search/movie" + "?api_key=" + api_key + "&query=" + movieName + "&page=" + pageNum;
       var xhr = new XMLHttpRequest();
 
-
+      currentPage=pageNum;
 
       xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -63,14 +64,17 @@
       xhr.open("GET", url);
       xhr.send();
       function showResults(response) {
-        results += response.total_results;
-        pages += response.total_pages;
+        results = response.total_results;
+        pages = response.total_pages;
 
         var resultsElement = document.getElementById('resultsQuantity');
         var pagesElement = document.getElementById('pagesQuantity');
 
         resultsElement.innerHTML = "Results: " + results;
         pagesElement.innerHTML = "Pages: " + pages;
+
+        var currentPageElement = document.getElementById('pageTb');
+        currentPageElement.innerHTML = "Page " + currentPage + " / " + pages;
 
         // Get the container
         var container = document.getElementById('content');
@@ -109,6 +113,20 @@
         // Add list to container
         container.appendChild(list);
       }
+
+      //validate page limits
+        var backBtn = document.getElementById('backBtn');
+        var nextBtn = document.getElementById('nextBtn');
+
+        if(currentPage==1)
+          backBtn.disabled = true;
+        else
+          backBtn.disabled = false;
+
+          if(currentPage===pages)
+          nextBtn.disabled = true;
+        else
+          nextBtn.disabled = false;
     }
     var form = document.getElementById('movieForm');
     form.onsubmit = function(evt) {
@@ -120,35 +138,46 @@
         var name = document.getElementById('name');
         // Get data
         
+        currentName = name.value;
         currentPage = 1;
 
-        get(name.value, currentPage);
+        get(currentName, currentPage);
         // Reset form
         name.value = '';
     };
 
     function goBack(){
       console.log("echando pa tra");
-    var btn = document.getElementById('backBtn');
-    if(btn.disabled == false){
-      btn.disabled = true;
-    }
-    else
-      btn.disabled = false;
+    
+    document.getElementById('content').innerHTML = "";
+
+    get(currentName, currentPage - 1);
+
+    // var btn = document.getElementById('backBtn');
+    // if(btn.disabled == false){
+    //   btn.disabled = true;
+    // }
+    // else
+    //   btn.disabled = false;
     }
 
     function goNext(){
     console.log("echando pa lante");
-    var btn = document.getElementById('nextBtn');
-    if(btn.disabled == false){
-      btn.disabled = true;
-    }
-    else
-      btn.disabled = false;
+    
+    document.getElementById('content').innerHTML = "";
+
+    get(currentName, currentPage + 1);
+    // var btn = document.getElementById('nextBtn');
+    // if(btn.disabled == false){
+    //   btn.disabled = true;
+    // }
+    // else
+    //   btn.disabled = false;
     }
 
     function reset(){
       document.getElementById('content').innerHTML = "";
+      currentName = "";
       currentPage = 0;
       results = 0;
       pages = 0;
